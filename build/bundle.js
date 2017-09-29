@@ -21240,9 +21240,7 @@ var ChatRoom = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ChatRoom.__proto__ || Object.getPrototypeOf(ChatRoom)).call(this, props, context));
 
         _this.state = {
-            message: [{
-                id: 0, text: 'first message'
-            }]
+            messages: [{ id: 0, text: 'first message' }, { id: 0, text: 'second message' }]
 
         };
         return _this;
@@ -21251,32 +21249,21 @@ var ChatRoom = function (_Component) {
     _createClass(ChatRoom, [{
         key: 'render',
         value: function render() {
+            var currentMessage = this.state.messages.map(function (message, i) {
+                return _react2.default.createElement(
+                    'li',
+                    { key: message.id },
+                    message.text
+                );
+            });
+
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(
                     'ol',
                     null,
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        '1'
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        '2'
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        '3'
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        '4'
-                    )
+                    currentMessage
                 ),
                 _react2.default.createElement('input', { type: 'text', placeholder: 'Message' }),
                 _react2.default.createElement(

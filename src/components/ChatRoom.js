@@ -5,21 +5,25 @@ class ChatRoom extends Component{
     constructor(props, context){
             super(props, context)
             this.state = {
-                message: [{
-                    id:0, text:'first message'
-                }]
+                messages: [
+                    {id:0, text:'first message'},
+                    {id:0, text:'second message'},
+                ]
 
             }
     }
 
     render(){
+const currentMessage = this.state.messages.map((message, i ) =>{
+    return (
+        <li key={message.id}>{message.text}</li>
+    )
+})
+
         return(
             <div> 
                 <ol>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
+                    {currentMessage}
                 </ol>
                 <input type="text" placeholder="Message" />
                 <button> Submit Message </button>
