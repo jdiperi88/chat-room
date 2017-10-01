@@ -3,15 +3,50 @@ import React, {Component} from 'react';
 class ChatRoom extends Component{
 
     constructor(props, context){
-            super(props, context)
-            this.state = {
-                messages: [
-                    {id:0, text:'first message'},
-                    {id:0, text:'second message'},
-                ]
-
-            }
+        super(props, context)
+        this.updateMessage =this.updateMessage.bind(this)
+        this.submitMessage = this.submitMessage.bind(this);
+        this.state = {
+            message: '',
+            messages: []
+        }
     }
+
+    componentDidMount(){
+       firebase.database().ref('messages/').on('value', (snapshot) =>{
+            const currentMessages = snapshot.val()
+
+            if(currentMessages != null){
+                this.setState({
+                    messages: currentMessages
+                })
+            }
+       }) 
+    }
+
+    updateMessage(event){
+        console.log('updateMessage'+ event.target.value)
+        this.setState({
+            message: event.target.value
+        })
+    }
+    submitMessage(event){
+        console.log('submit message'+ this.state.message);
+        const nextMessage = {
+            id: this.state.messages.length,
+            text: this.state.message
+        }
+
+        // var list = Object.assign([], this.state.messages)
+        // list.push(nextMessage)
+        // this.setState({
+        //     messages: list
+        // })
+
+        firebase.database().ref('messages/' + nextMessage.id).set(nextMessage)
+
+    }
+
 
     render(){
 const currentMessage = this.state.messages.map((message, i ) =>{
@@ -25,8 +60,9 @@ const currentMessage = this.state.messages.map((message, i ) =>{
                 <ol>
                     {currentMessage}
                 </ol>
-                <input type="text" placeholder="Message" />
-                <button> Submit Message </button>
+                <input onChange={this.updateMessage} type="text" placeholder="Message" />
+                <br/>
+                <button onClick={this.submitMessage}> Submit Message </button>
             </div>
         )
     }

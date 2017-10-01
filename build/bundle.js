@@ -21239,14 +21239,55 @@ var ChatRoom = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (ChatRoom.__proto__ || Object.getPrototypeOf(ChatRoom)).call(this, props, context));
 
+        _this.updateMessage = _this.updateMessage.bind(_this);
+        _this.submitMessage = _this.submitMessage.bind(_this);
         _this.state = {
-            messages: [{ id: 0, text: 'first message' }, { id: 0, text: 'second message' }]
-
+            message: '',
+            messages: []
         };
         return _this;
     }
 
     _createClass(ChatRoom, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            firebase.database().ref('messages/').on('value', function (snapshot) {
+                var currentMessages = snapshot.val();
+
+                if (currentMessages != null) {
+                    _this2.setState({
+                        messages: currentMessages
+                    });
+                }
+            });
+        }
+    }, {
+        key: 'updateMessage',
+        value: function updateMessage(event) {
+            console.log('updateMessage' + event.target.value);
+            this.setState({
+                message: event.target.value
+            });
+        }
+    }, {
+        key: 'submitMessage',
+        value: function submitMessage(event) {
+            console.log('submit message' + this.state.message);
+            var nextMessage = {
+                id: this.state.messages.length,
+                text: this.state.message
+
+                // var list = Object.assign([], this.state.messages)
+                // list.push(nextMessage)
+                // this.setState({
+                //     messages: list
+                // })
+
+            };firebase.database().ref('messages/' + nextMessage.id).set(nextMessage);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var currentMessage = this.state.messages.map(function (message, i) {
@@ -21265,10 +21306,11 @@ var ChatRoom = function (_Component) {
                     null,
                     currentMessage
                 ),
-                _react2.default.createElement('input', { type: 'text', placeholder: 'Message' }),
+                _react2.default.createElement('input', { onChange: this.updateMessage, type: 'text', placeholder: 'Message' }),
+                _react2.default.createElement('br', null),
                 _react2.default.createElement(
                     'button',
-                    null,
+                    { onClick: this.submitMessage },
                     ' Submit Message '
                 )
             );
